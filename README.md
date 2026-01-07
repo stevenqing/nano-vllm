@@ -22,6 +22,8 @@ A lightweight vLLM implementation built from scratch.
 pip install git+https://github.com/GeeeekExplorer/nano-vllm.git
 ```
 
+For HPC/SLURM environments (ARM64/GH200) or detailed installation instructions, see [INSTALL.md](INSTALL.md).
+
 ## Model Download
 
 To download the model weights manually, use the following command:
