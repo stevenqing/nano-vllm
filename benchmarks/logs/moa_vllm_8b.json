@@ -1,0 +1,11 @@
+{
+  "label": "vllm-8B",
+  "model": "Qwen3-8B",
+  "num_layers": 2,
+  "num_agents": 3,
+  "num_prompts": 5,
+  "total_time_s": 43.56084098794963,
+  "avg_time_per_prompt_s": 8.712168197589927,
+  "total_api_calls": 20,
+  "api_calls_per_sec": 0.4591279586528796
+}

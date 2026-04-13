@@ -1,0 +1,12 @@
+CAMEL Role-Playing Benchmark: nano-vllm
+  API: http://localhost:8100/v1
+  Model: Qwen3-0.6B
+  Turns: 5
+
+2026-04-13 09:14:46,295 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:14:46,633 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:14:50,431 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:14:50,431 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:14:53,710 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:14:53,710 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+[nano-vllm] ~2406 words, 10.73s, ~224.2 words/s

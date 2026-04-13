@@ -1,0 +1,218 @@
+{
+  "engine": "vllm",
+  "environment": {
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "flash_attn": "2.8.3",
+    "triton": "3.6.0",
+    "transformers": "4.57.6",
+    "xxhash": "3.6.0",
+    "vllm": "0.19.0",
+    "flashinfer": "0.6.6",
+    "gpu_name": "NVIDIA A100-SXM4-80GB",
+    "gpu_memory_gb": "79.3",
+    "gpu_sm": "8.0",
+    "gpu_memory_mib": "81920, 4, 81151",
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "gpu_memory": {
+    "before_mb": 421,
+    "after_init_mb": 74477
+  },
+  "results": [
+    {
+      "config": "C16_R2_P200_N50_O64",
+      "repeat": 0,
+      "output_tokens": 3072,
+      "time_s": 6.951,
+      "throughput_tok_s": 441.93,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R2_P200_N50_O64",
+      "repeat": 1,
+      "output_tokens": 3072,
+      "time_s": 6.914,
+      "throughput_tok_s": 444.34,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.232,
+      "throughput_tok_s": 431.69,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.099,
+      "throughput_tok_s": 435.79,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R10_P200_N50_O64",
+      "repeat": 0,
+      "output_tokens": 11264,
+      "time_s": 26.219,
+      "throughput_tok_s": 429.62,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R10_P200_N50_O64",
+      "repeat": 1,
+      "output_tokens": 11264,
+      "time_s": 26.199,
+      "throughput_tok_s": 429.94,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P100_N50_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.018,
+      "throughput_tok_s": 438.28,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P100_N50_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.012,
+      "throughput_tok_s": 438.48,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P500_N50_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.393,
+      "throughput_tok_s": 426.87,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P500_N50_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.393,
+      "throughput_tok_s": 426.88,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P1000_N50_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.771,
+      "throughput_tok_s": 415.96,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P1000_N50_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.779,
+      "throughput_tok_s": 415.73,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N100_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.275,
+      "throughput_tok_s": 430.39,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N100_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.233,
+      "throughput_tok_s": 431.67,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N200_O64",
+      "repeat": 0,
+      "output_tokens": 6144,
+      "time_s": 14.336,
+      "throughput_tok_s": 428.58,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N200_O64",
+      "repeat": 1,
+      "output_tokens": 6144,
+      "time_s": 14.34,
+      "throughput_tok_s": 428.45,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O32",
+      "repeat": 0,
+      "output_tokens": 3072,
+      "time_s": 7.233,
+      "throughput_tok_s": 424.71,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O32",
+      "repeat": 1,
+      "output_tokens": 3072,
+      "time_s": 7.233,
+      "throughput_tok_s": 424.74,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O128",
+      "repeat": 0,
+      "output_tokens": 12288,
+      "time_s": 27.988,
+      "throughput_tok_s": 439.04,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C16_R5_P200_N50_O128",
+      "repeat": 1,
+      "output_tokens": 12288,
+      "time_s": 28.025,
+      "throughput_tok_s": 438.47,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C4_R5_P200_N50_O64",
+      "repeat": 0,
+      "output_tokens": 1536,
+      "time_s": 3.537,
+      "throughput_tok_s": 434.25,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C4_R5_P200_N50_O64",
+      "repeat": 1,
+      "output_tokens": 1536,
+      "time_s": 3.523,
+      "throughput_tok_s": 436.05,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C32_R5_P200_N50_O64",
+      "repeat": 0,
+      "output_tokens": 12288,
+      "time_s": 28.178,
+      "throughput_tok_s": 436.08,
+      "gpu_mem_mb": 74477
+    },
+    {
+      "config": "C32_R5_P200_N50_O64",
+      "repeat": 1,
+      "output_tokens": 12288,
+      "time_s": 28.231,
+      "throughput_tok_s": 435.27,
+      "gpu_mem_mb": 74477
+    }
+  ]
+}

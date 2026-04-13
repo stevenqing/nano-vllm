@@ -1,0 +1,5 @@
+/home/aiscuser/.conda/envs/nano-vllm/lib/python3.12/site-packages/autogen_ext/models/openai/_openai_client.py:466: UserWarning: Missing required field 'structured_output' in ModelInfo. This field will be required in a future version of AutoGen.
+  validate_model_info(self._model_info)
+AutoGen Benchmark: vllm
+  API: http://localhost:8200/v1, Model: Qwen3-0.6B, Turns: 5
+[vllm] ~2951 words, 10.32s, ~285.9 words/s

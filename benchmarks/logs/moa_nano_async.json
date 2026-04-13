@@ -1,0 +1,11 @@
+{
+  "label": "nano-vllm-async",
+  "model": "Qwen3-0.6B",
+  "num_layers": 2,
+  "num_agents": 3,
+  "num_prompts": 5,
+  "total_time_s": 10.045530901057646,
+  "avg_time_per_prompt_s": 2.0091061802115293,
+  "total_api_calls": 20,
+  "api_calls_per_sec": 1.9909350931262673
+}

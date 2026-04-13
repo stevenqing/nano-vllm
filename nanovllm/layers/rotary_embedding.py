@@ -34,7 +34,6 @@ class RotaryEmbedding(nn.Module):
         cache = torch.cat((cos, sin), dim=-1).unsqueeze_(1)
         self.register_buffer("cos_sin_cache", cache, persistent=False)
 
-    @torch.compile
     def forward(
         self,
         positions: torch.Tensor,
@@ -48,7 +47,6 @@ class RotaryEmbedding(nn.Module):
         return query, key
 
 
-@lru_cache(1)
 def get_rope(
     head_size: int,
     rotary_dim: int,
@@ -56,6 +54,5 @@ def get_rope(
     base: float,
     rope_scaling: dict | None = None,
 ):
-    assert rope_scaling is None
     rotary_emb = RotaryEmbedding(head_size, rotary_dim, max_position, base)
     return rotary_emb

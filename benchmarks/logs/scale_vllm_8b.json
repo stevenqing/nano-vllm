@@ -1,0 +1,42 @@
+{
+  "label": "vllm-8B",
+  "model": "Qwen3-8B",
+  "num_rounds": 3,
+  "results": [
+    {
+      "num_agents": 1,
+      "total_tokens": 450,
+      "total_time_s": 4.924474167171866,
+      "throughput_tok_s": 91.38031487703708,
+      "avg_latency_ms": 1641.4913890572886
+    },
+    {
+      "num_agents": 2,
+      "total_tokens": 900,
+      "total_time_s": 4.90930780605413,
+      "throughput_tok_s": 183.32523352683756,
+      "avg_latency_ms": 818.2179676756883
+    },
+    {
+      "num_agents": 4,
+      "total_tokens": 1800,
+      "total_time_s": 5.0046885929768905,
+      "throughput_tok_s": 359.66273756292264,
+      "avg_latency_ms": 417.0573827480742
+    },
+    {
+      "num_agents": 8,
+      "total_tokens": 3600,
+      "total_time_s": 5.042632395168766,
+      "throughput_tok_s": 713.9128371620108,
+      "avg_latency_ms": 210.10968313203193
+    },
+    {
+      "num_agents": 16,
+      "total_tokens": 7200,
+      "total_time_s": 5.215593899018131,
+      "throughput_tok_s": 1380.4755775474478,
+      "avg_latency_ms": 108.6582062295444
+    }
+  ]
+}

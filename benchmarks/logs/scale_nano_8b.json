@@ -1,0 +1,42 @@
+{
+  "label": "nano-8B",
+  "model": "Qwen3-8B",
+  "num_rounds": 3,
+  "results": [
+    {
+      "num_agents": 1,
+      "total_tokens": 450,
+      "total_time_s": 5.035806420026347,
+      "throughput_tok_s": 89.36006718019269,
+      "avg_latency_ms": 1678.6021400087823
+    },
+    {
+      "num_agents": 2,
+      "total_tokens": 900,
+      "total_time_s": 5.091023083892651,
+      "throughput_tok_s": 176.78175588075518,
+      "avg_latency_ms": 848.5038473154418
+    },
+    {
+      "num_agents": 4,
+      "total_tokens": 1800,
+      "total_time_s": 5.32478895992972,
+      "throughput_tok_s": 338.0415662565071,
+      "avg_latency_ms": 443.73241332747665
+    },
+    {
+      "num_agents": 8,
+      "total_tokens": 3600,
+      "total_time_s": 5.628276933915913,
+      "throughput_tok_s": 639.6273748198944,
+      "avg_latency_ms": 234.51153891316304
+    },
+    {
+      "num_agents": 16,
+      "total_tokens": 7200,
+      "total_time_s": 5.584255819092505,
+      "throughput_tok_s": 1289.3392124664642,
+      "avg_latency_ms": 116.33866289776051
+    }
+  ]
+}

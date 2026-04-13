@@ -1,0 +1,13 @@
+CAMEL Role-Playing Benchmark: vllm
+  API: http://localhost:8200/v1
+  Model: Qwen3-0.6B
+  Turns: 5
+
+2026-04-13 09:17:37,623 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:37,973 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:41,406 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:41,406 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:44,449 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:44,449 - root - WARNING - Unknown model 'Qwen3-0.6B': context window size not defined. Defaulting to 999_999_999.
+2026-04-13 09:17:45,761 - camel.camel.agents.chat_agent - WARNING - No messages returned in `step()`. The model returned an empty response.
+[vllm] ~2814 words, 9.79s, ~287.5 words/s

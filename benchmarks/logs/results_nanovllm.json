@@ -1,0 +1,43 @@
+{
+  "engine": "nano-vllm",
+  "environment": {
+    "python": "3.12.13",
+    "torch": "2.10.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "flash_attn": "2.8.3",
+    "triton": "3.6.0",
+    "transformers": "4.57.6",
+    "xxhash": "3.6.0",
+    "gpu_name": "NVIDIA A100-SXM4-80GB",
+    "gpu_memory_gb": "79.3",
+    "gpu_sm": "8.0"
+  },
+  "gpu_memory": {"before_mb": 421, "after_init_mb": 72795},
+  "results": [
+    {"config": "C16_R2_P200_N50_O64",   "repeat": 0, "no_reuse_tok_s": 327.7, "kv_reuse_tok_s": 580.8, "speedup": 1.77},
+    {"config": "C16_R2_P200_N50_O64",   "repeat": 1, "no_reuse_tok_s": 329.2, "kv_reuse_tok_s": 582.1, "speedup": 1.77},
+    {"config": "C16_R5_P200_N50_O64",   "repeat": 0, "no_reuse_tok_s": 328.9, "kv_reuse_tok_s": 719.0, "speedup": 2.19},
+    {"config": "C16_R5_P200_N50_O64",   "repeat": 1, "no_reuse_tok_s": 328.6, "kv_reuse_tok_s": 719.0, "speedup": 2.19},
+    {"config": "C16_R10_P200_N50_O64",  "repeat": 0, "no_reuse_tok_s": 324.7, "kv_reuse_tok_s": 806.5, "speedup": 2.48},
+    {"config": "C16_R10_P200_N50_O64",  "repeat": 1, "no_reuse_tok_s": 324.6, "kv_reuse_tok_s": 805.5, "speedup": 2.48},
+    {"config": "C16_R5_P100_N50_O64",   "repeat": 0, "no_reuse_tok_s": 329.2, "kv_reuse_tok_s": 723.0, "speedup": 2.20},
+    {"config": "C16_R5_P100_N50_O64",   "repeat": 1, "no_reuse_tok_s": 329.1, "kv_reuse_tok_s": 722.9, "speedup": 2.20},
+    {"config": "C16_R5_P500_N50_O64",   "repeat": 0, "no_reuse_tok_s": 326.4, "kv_reuse_tok_s": 719.2, "speedup": 2.20},
+    {"config": "C16_R5_P500_N50_O64",   "repeat": 1, "no_reuse_tok_s": 326.8, "kv_reuse_tok_s": 718.2, "speedup": 2.20},
+    {"config": "C16_R5_P1000_N50_O64",  "repeat": 0, "no_reuse_tok_s": 316.8, "kv_reuse_tok_s": 704.0, "speedup": 2.22},
+    {"config": "C16_R5_P1000_N50_O64",  "repeat": 1, "no_reuse_tok_s": 316.7, "kv_reuse_tok_s": 703.8, "speedup": 2.22},
+    {"config": "C16_R5_P200_N100_O64",  "repeat": 0, "no_reuse_tok_s": 326.9, "kv_reuse_tok_s": 413.8, "speedup": 0.11},
+    {"config": "C16_R5_P200_N100_O64",  "repeat": 1, "no_reuse_tok_s": 326.9, "kv_reuse_tok_s": 416.6, "speedup": 0.11},
+    {"config": "C16_R5_P200_N200_O64",  "repeat": 0, "no_reuse_tok_s": 323.1, "kv_reuse_tok_s": 466.9, "speedup": 0.12},
+    {"config": "C16_R5_P200_N200_O64",  "repeat": 1, "no_reuse_tok_s": 323.3, "kv_reuse_tok_s": 466.8, "speedup": 0.12},
+    {"config": "C16_R5_P200_N50_O32",   "repeat": 0, "no_reuse_tok_s": 281.9, "kv_reuse_tok_s": 392.8, "speedup": 0.07},
+    {"config": "C16_R5_P200_N50_O32",   "repeat": 1, "no_reuse_tok_s": 281.5, "kv_reuse_tok_s": 389.9, "speedup": 0.06},
+    {"config": "C16_R5_P200_N50_O128",  "repeat": 0, "no_reuse_tok_s": 355.8, "kv_reuse_tok_s": 509.1, "speedup": 1.43},
+    {"config": "C16_R5_P200_N50_O128",  "repeat": 1, "no_reuse_tok_s": 355.9, "kv_reuse_tok_s": 508.7, "speedup": 1.43},
+    {"config": "C4_R5_P200_N50_O64",    "repeat": 0, "no_reuse_tok_s": 327.2, "kv_reuse_tok_s": 713.7, "speedup": 2.18},
+    {"config": "C4_R5_P200_N50_O64",    "repeat": 1, "no_reuse_tok_s": 327.1, "kv_reuse_tok_s": 717.8, "speedup": 2.19},
+    {"config": "C32_R5_P200_N50_O64",   "repeat": 0, "no_reuse_tok_s": 328.1, "kv_reuse_tok_s": 719.7, "speedup": 2.19},
+    {"config": "C32_R5_P200_N50_O64",   "repeat": 1, "no_reuse_tok_s": 328.9, "kv_reuse_tok_s": 718.8, "speedup": 2.19}
+  ]
+}

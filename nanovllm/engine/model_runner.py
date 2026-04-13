@@ -31,6 +31,8 @@ class ModelRunner:
         self.model = Qwen3ForCausalLM(hf_config)
         load_model(self.model, config.model)
         self.sampler = Sampler()
+        if not self.enforce_eager:
+            self.compile_model()
         self.warmup_model()
         self.allocate_kv_cache()
         if not self.enforce_eager:
@@ -94,7 +96,11 @@ class ModelRunner:
         max_num_batched_tokens, max_model_len = self.config.max_num_batched_tokens, self.config.max_model_len
         num_seqs = min(max_num_batched_tokens // max_model_len, self.config.max_num_seqs)
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
-        self.run(seqs, True)
+        # Use eager mode for memory profiling warmup to avoid compile-time allocation spikes
+        enforce_eager_backup = self.enforce_eager
+        self.enforce_eager = True
+        self.run(seqs, num_seqs)  # all prefill
+        self.enforce_eager = enforce_eager_backup
         torch.cuda.empty_cache()
 
     def allocate_kv_cache(self):
@@ -134,24 +140,23 @@ class ModelRunner:
         block_tables = None
         for seq in seqs:
             seqlen = len(seq)
-            input_ids.extend(seq[seq.num_cached_tokens:])
-            positions.extend(list(range(seq.num_cached_tokens, seqlen)))
-            seqlen_q = seqlen - seq.num_cached_tokens
-            seqlen_k = seqlen
+            chunk_start = getattr(seq, '_chunk_start', seq.num_cached_tokens)
+            chunk_end = seq.num_computed_tokens if seq.num_computed_tokens > 0 else seqlen
+            input_ids.extend(seq[chunk_start:chunk_end])
+            positions.extend(list(range(chunk_start, chunk_end)))
+            seqlen_q = chunk_end - chunk_start
+            seqlen_k = chunk_end
             cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
             cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
             max_seqlen_q = max(seqlen_q, max_seqlen_q)
             max_seqlen_k = max(seqlen_k, max_seqlen_k)
             if not seq.block_table:    # warmup
                 continue
-            for i in range(seq.num_cached_blocks, seq.num_blocks):
-                start = seq.block_table[i] * self.block_size
-                if i != seq.num_blocks - 1:
-                    end = start + self.block_size
-                else:
-                    end = start + seq.last_block_num_tokens 
-                slot_mapping.extend(list(range(start, end)))
-        if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    # prefix cache
+            for pos in range(chunk_start, chunk_end):
+                block_idx = pos // self.block_size
+                offset = pos % self.block_size
+                slot_mapping.append(seq.block_table[block_idx] * self.block_size + offset)
+        if cu_seqlens_k[-1] > cu_seqlens_q[-1]:    # prefix cache or chunked
             block_tables = self.prepare_block_tables(seqs)
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
@@ -161,7 +166,92 @@ class ModelRunner:
         set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, None, block_tables)
         return input_ids, positions
 
-    def prepare_decode(self, seqs: list[Sequence]):
+    def prepare_chunked(self, seqs: list[Sequence], num_prefill_seqs: int):
+        """Prepare inputs for a mixed batch of prefill chunks + decode tokens.
+        Uses flash_attn_varlen_func with block_table for all sequences."""
+        input_ids = []
+        positions = []
+        cu_seqlens_q = [0]
+        cu_seqlens_k = [0]
+        max_seqlen_q = 0
+        max_seqlen_k = 0
+        slot_mapping = []
+
+        # Prefill sequences (chunked)
+        for seq in seqs[:num_prefill_seqs]:
+            chunk_start = seq._chunk_start
+            chunk_end = seq.num_computed_tokens
+            chunk_size = chunk_end - chunk_start
+
+            input_ids.extend(seq[chunk_start:chunk_end])
+            positions.extend(range(chunk_start, chunk_end))
+
+            cu_seqlens_q.append(cu_seqlens_q[-1] + chunk_size)
+            cu_seqlens_k.append(cu_seqlens_k[-1] + chunk_end)
+            max_seqlen_q = max(max_seqlen_q, chunk_size)
+            max_seqlen_k = max(max_seqlen_k, chunk_end)
+
+            for pos in range(chunk_start, chunk_end):
+                block_idx = pos // self.block_size
+                offset = pos % self.block_size
+                slot_mapping.append(seq.block_table[block_idx] * self.block_size + offset)
+
+        # Decode sequences (1 token each)
+        for seq in seqs[num_prefill_seqs:]:
+            input_ids.append(seq.last_token)
+            positions.append(len(seq) - 1)
+
+            cu_seqlens_q.append(cu_seqlens_q[-1] + 1)
+            cu_seqlens_k.append(cu_seqlens_k[-1] + len(seq))
+            max_seqlen_q = max(max_seqlen_q, 1)
+            max_seqlen_k = max(max_seqlen_k, len(seq))
+
+            slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
+
+        input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
+        positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
+        cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        block_tables = self.prepare_block_tables(seqs)
+        set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, None, block_tables)
+        return input_ids, positions
+
+    def prepare_decode_direct(self, seqs: list[Sequence]):
+        """Write decode inputs directly into CUDA graph buffers — zero tensor allocation."""
+        bs = len(seqs)
+        gv = self.graph_vars
+        # Use numpy views for fast CPU writes (avoids InferenceMode issues)
+        np_ids = self._np_staging["input_ids"]
+        np_pos = self._np_staging["positions"]
+        np_ctx = self._np_staging["context_lens"]
+        np_slot = self._np_staging["slot_mapping"]
+        np_bt = self._np_staging["block_tables"]
+        max_bt_len = 0
+        for i, seq in enumerate(seqs):
+            np_ids[i] = seq.last_token
+            np_pos[i] = len(seq) - 1
+            np_ctx[i] = len(seq)
+            np_slot[i] = seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1
+            bt = seq.block_table
+            bt_len = len(bt)
+            if bt_len > max_bt_len:
+                max_bt_len = bt_len
+            np_bt[i, :bt_len] = bt
+            np_bt[i, bt_len:] = 0
+        # Bulk copy: pinned CPU → GPU graph buffers
+        gv["input_ids"][:bs].copy_(self._cpu_staging["input_ids"][:bs], non_blocking=True)
+        gv["positions"][:bs].copy_(self._cpu_staging["positions"][:bs], non_blocking=True)
+        gv["slot_mapping"].fill_(-1)
+        gv["slot_mapping"][:bs].copy_(self._cpu_staging["slot_mapping"][:bs], non_blocking=True)
+        gv["context_lens"].zero_()
+        gv["context_lens"][:bs].copy_(self._cpu_staging["context_lens"][:bs], non_blocking=True)
+        gv["block_tables"][:bs, :max_bt_len].copy_(self._cpu_staging["block_tables"][:bs, :max_bt_len], non_blocking=True)
+        if max_bt_len < gv["block_tables"].size(1):
+            gv["block_tables"][:bs, max_bt_len:].zero_()
+
+    def prepare_decode_legacy(self, seqs: list[Sequence]):
+        """Legacy prepare_decode: creates new tensors. Used for eager mode and warmup."""
         input_ids = []
         positions = []
         slot_mapping = []
@@ -170,7 +260,7 @@ class ModelRunner:
             input_ids.append(seq.last_token)
             positions.append(len(seq) - 1)
             context_lens.append(len(seq))
-            slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens  - 1)
+            slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
@@ -186,32 +276,80 @@ class ModelRunner:
         temperatures = torch.tensor(temperatures, dtype=torch.float32, pin_memory=True).cuda(non_blocking=True)
         return temperatures
 
+    def prepare_sample_direct(self, seqs: list[Sequence]):
+        """Write temperatures into pre-allocated staging buffer."""
+        bs = len(seqs)
+        np_temps = self._np_staging["temperatures"]
+        for i, seq in enumerate(seqs):
+            np_temps[i] = seq.temperature
+        self._gpu_temps[:bs].copy_(self._cpu_staging["temperatures"][:bs], non_blocking=True)
+        return self._gpu_temps[:bs]
+
     @torch.inference_mode()
     def run_model(self, input_ids: torch.Tensor, positions: torch.Tensor, is_prefill: bool):
         if is_prefill or self.enforce_eager or input_ids.size(0) > 512:
             return self.model.compute_logits(self.model(input_ids, positions))
         else:
+            # Legacy CUDA graph path (used when prepare_decode_legacy is called)
             bs = input_ids.size(0)
             context = get_context()
             graph = self.graphs[next(x for x in self.graph_bs if x >= bs)]
-            graph_vars = self.graph_vars
-            graph_vars["input_ids"][:bs] = input_ids
-            graph_vars["positions"][:bs] = positions
-            graph_vars["slot_mapping"].fill_(-1)
-            graph_vars["slot_mapping"][:bs] = context.slot_mapping
-            graph_vars["context_lens"].zero_()
-            graph_vars["context_lens"][:bs] = context.context_lens
-            graph_vars["block_tables"][:bs, :context.block_tables.size(1)] = context.block_tables
+            gv = self.graph_vars
+            gv["input_ids"][:bs] = input_ids
+            gv["positions"][:bs] = positions
+            gv["slot_mapping"].fill_(-1)
+            gv["slot_mapping"][:bs] = context.slot_mapping
+            gv["context_lens"].zero_()
+            gv["context_lens"][:bs] = context.context_lens
+            gv["block_tables"][:bs, :context.block_tables.size(1)] = context.block_tables
             graph.replay()
-            return self.model.compute_logits(graph_vars["outputs"][:bs])
+            return gv["logits"][:bs] if self.rank == 0 else None
 
-    def run(self, seqs: list[Sequence], is_prefill: bool) -> list[int]:
-        input_ids, positions = self.prepare_prefill(seqs) if is_prefill else self.prepare_decode(seqs)
-        temperatures = self.prepare_sample(seqs) if self.rank == 0 else None
-        logits = self.run_model(input_ids, positions, is_prefill)
+    @torch.inference_mode()
+    def run_model_decode_direct(self, bs: int):
+        """Run decode with data already written into graph_vars. No tensor copy."""
+        graph = self.graphs[next(x for x in self.graph_bs if x >= bs)]
+        graph.replay()
+        return self.graph_vars["logits"][:bs] if self.rank == 0 else None
+
+    @torch.inference_mode()
+    def run(self, seqs: list[Sequence], num_prefill_seqs: int) -> list[int]:
+        is_prefill = num_prefill_seqs > 0
+        if is_prefill:
+            num_decode_seqs = len(seqs) - num_prefill_seqs
+            if num_decode_seqs > 0:
+                input_ids, positions = self.prepare_chunked(seqs, num_prefill_seqs)
+            else:
+                input_ids, positions = self.prepare_prefill(seqs)
+            temperatures = self.prepare_sample(seqs) if self.rank == 0 else None
+            logits = self.run_model(input_ids, positions, True)
+        elif not self.enforce_eager and len(seqs) <= 512:
+            # Fast path: write directly into graph buffers, skip tensor allocation
+            self.prepare_decode_direct(seqs)
+            temperatures = self.prepare_sample_direct(seqs) if self.rank == 0 else None
+            logits = self.run_model_decode_direct(len(seqs))
+        else:
+            input_ids, positions = self.prepare_decode_legacy(seqs)
+            temperatures = self.prepare_sample(seqs) if self.rank == 0 else None
+            logits = self.run_model(input_ids, positions, False)
         token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
         reset_context()
         return token_ids
+
+    def copy_block_kv(self, src_id: int, dst_id: int):
+        """Copy KV cache data from src block to dst block (all layers)."""
+        self.kv_cache[:, :, dst_id].copy_(self.kv_cache[:, :, src_id])
+
+    @torch.inference_mode()
+    def compile_model(self):
+        """Compile the transformer with torch.compile.
+        Attention.forward is excluded (@torch.compiler.disable), so inductor
+        can fuse norms, projections, RoPE, and MLP across layer boundaries."""
+        import torch._inductor.config as inductor_config
+        inductor_config.compile_threads = 1
+        import torch._inductor.runtime.triton_heuristics as th
+        th.TRITON_MAX_BLOCK["X"] = 16384
+        self.model.model = torch.compile(self.model.model, fullgraph=False)
 
     @torch.inference_mode()
     def capture_cudagraph(self):
@@ -225,6 +363,8 @@ class ModelRunner:
         context_lens = torch.zeros(max_bs, dtype=torch.int32)
         block_tables = torch.zeros(max_bs, max_num_blocks, dtype=torch.int32)
         outputs = torch.zeros(max_bs, hf_config.hidden_size)
+        vocab_size = hf_config.vocab_size
+        logits = torch.zeros(max_bs, vocab_size) if self.rank == 0 else None
         self.graph_bs = [1, 2, 4, 8] + list(range(16, max_bs + 1, 16))
         self.graphs = {}
         self.graph_pool = None
@@ -232,9 +372,15 @@ class ModelRunner:
         for bs in reversed(self.graph_bs):
             graph = torch.cuda.CUDAGraph()
             set_context(False, slot_mapping=slot_mapping[:bs], context_lens=context_lens[:bs], block_tables=block_tables[:bs])
-            outputs[:bs] = self.model(input_ids[:bs], positions[:bs])    # warmup
+            # warmup
+            outputs[:bs] = self.model(input_ids[:bs], positions[:bs])
+            if self.rank == 0:
+                logits[:bs] = self.model.compute_logits(outputs[:bs])
+            # capture: model forward + compute_logits in one graph
             with torch.cuda.graph(graph, self.graph_pool):
-                outputs[:bs] = self.model(input_ids[:bs], positions[:bs])    # capture
+                outputs[:bs] = self.model(input_ids[:bs], positions[:bs])
+                if self.rank == 0:
+                    logits[:bs] = self.model.compute_logits(outputs[:bs])
             if self.graph_pool is None:
                 self.graph_pool = graph.pool()
             self.graphs[bs] = graph
@@ -248,4 +394,17 @@ class ModelRunner:
             context_lens=context_lens,
             block_tables=block_tables,
             outputs=outputs,
+            logits=logits,
         )
+        # Pre-allocate pinned CPU staging buffers for prepare_decode_direct
+        self._cpu_staging = dict(
+            input_ids=torch.zeros(max_bs, dtype=torch.int64, device="cpu").pin_memory(),
+            positions=torch.zeros(max_bs, dtype=torch.int64, device="cpu").pin_memory(),
+            slot_mapping=torch.zeros(max_bs, dtype=torch.int32, device="cpu").pin_memory(),
+            context_lens=torch.zeros(max_bs, dtype=torch.int32, device="cpu").pin_memory(),
+            block_tables=torch.zeros(max_bs, max_num_blocks, dtype=torch.int32, device="cpu").pin_memory(),
+            temperatures=torch.zeros(max_bs, dtype=torch.float32, device="cpu").pin_memory(),
+        )
+        self._gpu_temps = torch.zeros(max_bs, dtype=torch.float32, device="cuda")
+        # Numpy views into pinned CPU staging for fast Python writes
+        self._np_staging = {k: v.numpy() for k, v in self._cpu_staging.items()}

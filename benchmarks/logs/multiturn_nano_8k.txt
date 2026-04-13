@@ -1,0 +1,143 @@
+13-04-2026 08:44:00 [INFO] - Namespace(input_file='generate_multi_turn.json', output_file=None, seed=0, model='/home/aiscuser/huggingface/Qwen3-0.6B', served_model_name='Qwen3-0.6B', url='http://localhost:8100', num_clients=1, max_active_conversations=4, max_num_requests=None, warmup_step=False, max_turns=None, no_early_stop=False, limit_max_tokens=0, limit_min_tokens=0, request_rate=0, max_retries=0, conversation_sampling=<ConversationSampling.ROUND_ROBIN: 'round_robin'>, verify_output=False, request_timeout_sec=300, no_stream=True, excel_output=False, verbose=False, print_content=False, warmup_percentages='0%')
+13-04-2026 08:44:00 [INFO] - [92mInput parameters:[0m
+13-04-2026 08:44:00 [INFO] - url=http://localhost:8100
+13-04-2026 08:44:00 [INFO] - model=/home/aiscuser/huggingface/Qwen3-0.6B
+13-04-2026 08:44:00 [INFO] - num_clients=1
+13-04-2026 08:44:00 [INFO] - Warmup percentages (percentage of samples): [0.0]
+13-04-2026 08:44:00 [INFO] - Loading tokenizer
+13-04-2026 08:44:00 [INFO] - [94mCollecting information from server: http://localhost:8100[0m
+13-04-2026 08:44:00 [INFO] - [94mModels:[0m
+13-04-2026 08:44:00 [INFO] - [94m	model_id='Qwen3-0.6B', max_model_len='N/A'[0m
+13-04-2026 08:44:00 [INFO] - Reading input file: generate_multi_turn.json
+13-04-2026 08:44:00 [INFO] - Using input file with filetype: generate_conversations
+13-04-2026 08:44:00 [INFO] - [95mGenerating conversations...[0m
+13-04-2026 08:44:00 [INFO] - GenConvArgs(num_conversations=24, text_files=['pg1184.txt'], input_num_turns=UniformDistribution[12, 18], input_common_prefix_num_tokens=Constant[500], input_prefix_num_tokens=LognormalDistribution[1000, 0.85, 5000], input_num_tokens=UniformDistribution[120, 160], output_num_tokens=UniformDistribution[80, 120], print_stats=False)
+Token indices sequence length is longer than the specified maximum sequence length for this model (655477 > 131072). Running this sequence through the model will result in indexing errors
+13-04-2026 08:44:02 [INFO] - Loaded 655477 tokens from file pg1184.txt, total tokens so far: 655477
+Generating conversations:   0%|          | 0/24 [00:00<?, ?conv/s]Generating conversations: 100%|██████████| 24/24 [00:00<00:00, 389.01conv/s]
+13-04-2026 08:44:02 [INFO] - [92mStarting 1 clients[0m
+13-04-2026 08:44:02 [INFO] - [96mStarted client 0: max_num_requests=None, max_active_conversations=4[0m
+13-04-2026 08:44:13 [INFO] - [96mFinished 3 out of 24 conversations (12%), 0 out of 1 clients finished, collected 34 measurements, runtime 10.377 sec[0m
+13-04-2026 08:44:13 [INFO] - [96mEstimated req/sec 3.276, estimated runtime left 72.641 sec[0m
+13-04-2026 08:44:13 [INFO] - --------------------------------------------------
+13-04-2026 08:44:13 [INFO] - [moving_avg_ttft_ms       ] avg:    300.547 (15 samples)
+13-04-2026 08:44:13 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:13 [INFO] - [ttft_ms                  ] avg:    294.376, min:    236.088, max:    347.467
+13-04-2026 08:44:13 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:13 [INFO] - [latency_ms               ] avg:    294.376, min:    236.088, max:    347.467
+13-04-2026 08:44:13 [INFO] - [input_num_turns          ] avg:      7.000, min:      1.000, max:     15.000
+13-04-2026 08:44:13 [INFO] - [input_num_tokens         ] avg:   2231.059, min:    892.000, max:   3765.000
+13-04-2026 08:44:13 [INFO] - [output_num_tokens        ] avg:    100.059, min:     80.000, max:    120.000
+13-04-2026 08:44:13 [INFO] - --------------------------------------------------
+13-04-2026 08:44:21 [INFO] - [96mFinished 6 out of 24 conversations (25%), 0 out of 1 clients finished, collected 61 measurements, runtime 18.657 sec[0m
+13-04-2026 08:44:21 [INFO] - [96mEstimated req/sec 3.269, estimated runtime left 55.972 sec[0m
+13-04-2026 08:44:21 [INFO] - --------------------------------------------------
+13-04-2026 08:44:21 [INFO] - [moving_avg_ttft_ms       ] avg:    292.261 (15 samples)
+13-04-2026 08:44:21 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:21 [INFO] - [ttft_ms                  ] avg:    294.293, min:    236.088, max:    349.995
+13-04-2026 08:44:21 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:21 [INFO] - [latency_ms               ] avg:    294.293, min:    236.088, max:    349.995
+13-04-2026 08:44:21 [INFO] - [input_num_turns          ] avg:      7.328, min:      1.000, max:     17.000
+13-04-2026 08:44:21 [INFO] - [input_num_tokens         ] avg:   2471.623, min:    892.000, max:   4460.000
+13-04-2026 08:44:21 [INFO] - [output_num_tokens        ] avg:     99.590, min:     80.000, max:    120.000
+13-04-2026 08:44:21 [INFO] - --------------------------------------------------
+13-04-2026 08:44:30 [INFO] - [96mFinished 9 out of 24 conversations (38%), 0 out of 1 clients finished, collected 88 measurements, runtime 27.311 sec[0m
+13-04-2026 08:44:30 [INFO] - [96mEstimated req/sec 3.222, estimated runtime left 45.519 sec[0m
+13-04-2026 08:44:30 [INFO] - --------------------------------------------------
+13-04-2026 08:44:30 [INFO] - [moving_avg_ttft_ms       ] avg:    302.847 (15 samples)
+13-04-2026 08:44:30 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:30 [INFO] - [ttft_ms                  ] avg:    298.625, min:    236.088, max:    354.952
+13-04-2026 08:44:30 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:30 [INFO] - [latency_ms               ] avg:    298.625, min:    236.088, max:    354.952
+13-04-2026 08:44:30 [INFO] - [input_num_turns          ] avg:      7.500, min:      1.000, max:     17.000
+13-04-2026 08:44:30 [INFO] - [input_num_tokens         ] avg:   2580.330, min:    892.000, max:   4460.000
+13-04-2026 08:44:30 [INFO] - [output_num_tokens        ] avg:    101.011, min:     80.000, max:    120.000
+13-04-2026 08:44:30 [INFO] - --------------------------------------------------
+13-04-2026 08:44:35 [INFO] - [96mFinished 12 out of 24 conversations (50%), 0 out of 1 clients finished, collected 106 measurements, runtime 32.757 sec[0m
+13-04-2026 08:44:35 [INFO] - [96mEstimated req/sec 3.236, estimated runtime left 32.757 sec[0m
+13-04-2026 08:44:35 [INFO] - --------------------------------------------------
+13-04-2026 08:44:35 [INFO] - [moving_avg_ttft_ms       ] avg:    290.649 (15 samples)
+13-04-2026 08:44:35 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:35 [INFO] - [ttft_ms                  ] avg:    297.637, min:    236.088, max:    354.952
+13-04-2026 08:44:35 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:35 [INFO] - [latency_ms               ] avg:    297.637, min:    236.088, max:    354.952
+13-04-2026 08:44:35 [INFO] - [input_num_turns          ] avg:      7.566, min:      1.000, max:     17.000
+13-04-2026 08:44:35 [INFO] - [input_num_tokens         ] avg:   2532.887, min:    892.000, max:   4460.000
+13-04-2026 08:44:35 [INFO] - [output_num_tokens        ] avg:    100.981, min:     80.000, max:    120.000
+13-04-2026 08:44:35 [INFO] - --------------------------------------------------
+13-04-2026 08:44:41 [INFO] - [96mFinished 15 out of 24 conversations (62%), 0 out of 1 clients finished, collected 127 measurements, runtime 38.885 sec[0m
+13-04-2026 08:44:41 [INFO] - [96mEstimated req/sec 3.266, estimated runtime left 23.331 sec[0m
+13-04-2026 08:44:41 [INFO] - --------------------------------------------------
+13-04-2026 08:44:41 [INFO] - [moving_avg_ttft_ms       ] avg:    281.252 (15 samples)
+13-04-2026 08:44:41 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:41 [INFO] - [ttft_ms                  ] avg:    295.214, min:    236.088, max:    354.952
+13-04-2026 08:44:41 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:41 [INFO] - [latency_ms               ] avg:    295.214, min:    236.088, max:    354.952
+13-04-2026 08:44:41 [INFO] - [input_num_turns          ] avg:      7.457, min:      1.000, max:     17.000
+13-04-2026 08:44:41 [INFO] - [input_num_tokens         ] avg:   2434.551, min:    892.000, max:   4460.000
+13-04-2026 08:44:41 [INFO] - [output_num_tokens        ] avg:    100.276, min:     80.000, max:    120.000
+13-04-2026 08:44:41 [INFO] - --------------------------------------------------
+13-04-2026 08:44:48 [INFO] - [96mFinished 18 out of 24 conversations (75%), 0 out of 1 clients finished, collected 151 measurements, runtime 46.071 sec[0m
+13-04-2026 08:44:48 [INFO] - [96mEstimated req/sec 3.278, estimated runtime left 15.357 sec[0m
+13-04-2026 08:44:48 [INFO] - --------------------------------------------------
+13-04-2026 08:44:48 [INFO] - [moving_avg_ttft_ms       ] avg:    295.068 (15 samples)
+13-04-2026 08:44:48 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:48 [INFO] - [ttft_ms                  ] avg:    294.637, min:    236.088, max:    354.952
+13-04-2026 08:44:48 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:48 [INFO] - [latency_ms               ] avg:    294.637, min:    236.088, max:    354.952
+13-04-2026 08:44:48 [INFO] - [input_num_turns          ] avg:      7.530, min:      1.000, max:     17.000
+13-04-2026 08:44:48 [INFO] - [input_num_tokens         ] avg:   2351.179, min:    892.000, max:   4460.000
+13-04-2026 08:44:48 [INFO] - [output_num_tokens        ] avg:    100.265, min:     80.000, max:    120.000
+13-04-2026 08:44:48 [INFO] - --------------------------------------------------
+13-04-2026 08:44:53 [INFO] - [93mClient 0 has no more work[0m
+13-04-2026 08:44:53 [INFO] - [96mFinished 21 out of 24 conversations (88%), 0 out of 1 clients finished, collected 168 measurements, runtime 51.018 sec[0m
+13-04-2026 08:44:53 [INFO] - [96mEstimated req/sec 3.293, estimated runtime left 7.288 sec[0m
+13-04-2026 08:44:53 [INFO] - --------------------------------------------------
+13-04-2026 08:44:53 [INFO] - [moving_avg_ttft_ms       ] avg:    277.952 (15 samples)
+13-04-2026 08:44:53 [INFO] - [moving_avg_tpot_ms       ] avg:      0.000 (15 samples)
+13-04-2026 08:44:53 [INFO] - [ttft_ms                  ] avg:    293.486, min:    235.319, max:    354.952
+13-04-2026 08:44:53 [INFO] - [tpot_ms                  ] avg:      0.000, min:      0.000, max:      0.000
+13-04-2026 08:44:53 [INFO] - [latency_ms               ] avg:    293.486, min:    235.319, max:    354.952
+13-04-2026 08:44:53 [INFO] - [input_num_turns          ] avg:      7.548, min:      1.000, max:     17.000
+13-04-2026 08:44:53 [INFO] - [input_num_tokens         ] avg:   2306.863, min:    892.000, max:   4460.000
+13-04-2026 08:44:53 [INFO] - [output_num_tokens        ] avg:     99.958, min:     80.000, max:    120.000
+13-04-2026 08:44:53 [INFO] - --------------------------------------------------
+13-04-2026 08:44:53 [INFO] - [96mClient 0 is done (num_successes=168, num_failures=0)[0m
+13-04-2026 08:44:53 [INFO] - [96m1 out of 1 clients finished[0m
+13-04-2026 08:44:53 [INFO] - [93mSending termination signal to clients[0m
+13-04-2026 08:44:53 [INFO] - [96mAll 1 clients finished[0m
+13-04-2026 08:44:53 [INFO] - Collected 168 samples from all the clients
+13-04-2026 08:44:53 [INFO] - [96mWaiting for client client_0 (is alive: True)[0m
+13-04-2026 08:44:53 [INFO] - All 1 clients exited (successfully finished 21 out of 24 conversations)
+13-04-2026 08:44:53 [INFO] - [92mAll clients finished, benchmark runtime: 51.052 sec (51051.745 ms), requests per second: 3.291[0m
+13-04-2026 08:44:53 [INFO] - Processing 168 samples...
+----------------------------------------------------------------------------------------------------
+[93mParameters:[0m
+model=/home/aiscuser/huggingface/Qwen3-0.6B
+num_clients=1
+num_conversations=24
+active_conversations=4
+seed=0
+[93mConversations Generation Parameters:[0m
+text_files=pg1184.txt
+input_num_turns=UniformDistribution[12, 18]
+input_common_prefix_num_tokens=Constant[500]
+input_prefix_num_tokens=LognormalDistribution[1000, 0.85, 5000]
+input_num_tokens=UniformDistribution[120, 160]
+output_num_tokens=UniformDistribution[80, 120]
+----------------------------------------------------------------------------------------------------
+[93mStatistics summary:[0m
+runtime_sec = 50.979
+requests_per_sec = 3.295
+----------------------------------------------------------------------------------------------------
+                   count     mean     std  ...      90%      99%      max
+ttft_ms            168.0   293.49   31.40  ...   337.88   350.27   354.95
+tpot_ms            168.0     0.00    0.00  ...     0.00     0.00     0.00
+latency_ms         168.0   293.49   31.40  ...   337.88   350.27   354.95
+input_num_turns    168.0     7.55    4.63  ...    13.60    17.00    17.00
+input_num_tokens   168.0  2306.86  807.90  ...  3485.40  4211.86  4460.00
+output_num_tokens  168.0    99.96   11.76  ...   116.00   120.00   120.00
+output_num_chunks  168.0     0.00    0.00  ...     0.00     0.00     0.00
+
+[7 rows x 10 columns]
+----------------------------------------------------------------------------------------------------
